@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String    @id @default(uuid())
+  name       String
+  email      String    @unique
+  password   String
+  whatsapp   String
+  role       String
+  image_url  String?
+  created_at DateTime?
+  updated_at DateTime?
+
+  @@map("users")
+}
+
+model Aircraft {
+  id                String      @id @default(uuid())
+  prefix            String      @unique
+  model             String
+  engine_model      String
+  serial_celula     String
+  serial_engine     String
+  fabricante_celula String
+  fabricante_engine String
+  date_maker_engine DateTime
+  date_maker_celula DateTime
+  usage             Decimal
+  time_celula       Decimal
+  time_engine       Decimal
+  n1                Decimal
+  n2                Decimal
+  status            Boolean?
+  next_manutencao   DateTime?
+  img_url           String?
+  mapaMotor         MapaMotor?  @relation(fields: [mapaMotorId], references: [id])
+  mapaCelula        MapaCelula? @relation(fields: [mapaCelulaId], references: [id])
+  created_at        DateTime?
+  updated_at        DateTime?
+  deleted_at        DateTime?
+  mapaMotorId       String?
+  mapaCelulaId      String?
+
+  @@map("aircrafts")
+}
+
+model MapaMotor {
+  id       String     @id @default(uuid())
+  section  Section[]
+  aircraft Aircraft[]
+
+  @@map("MapasMotor")
+}
+
+model MapaCelula {
+  id       String     @id @default(uuid())
+  section  Section[]
+  Aircraft Aircraft[]
+
+  @@map("MapasCelula")
+}
+
+model Section {
+  id         String      @id @default(uuid())
+  title      String
+  components Component[]
+
+  MapaMotor    MapaMotor?  @relation(fields: [mapaMotorId], references: [id])
+  mapaMotorId  String?
+  MapaCelula   MapaCelula? @relation(fields: [mapaCelulaId], references: [id])
+  mapaCelulaId String?
+}
+
+model Component {
+  id                            String    @id @default(uuid())
+  description                   String
+  part_number                   String
+  serial_number                 String
+  date_instalation              DateTime
+  time_since_new_engine         Decimal
+  time_since_new_component      Decimal
+  time_since_overhall_component Decimal
+  frequency                     Decimal
+  type_frenquency               String
+  time_serial_new_now           Decimal
+  time_serial_overhall_now      Decimal
+  created_at                    DateTime?
+  updated_at                    DateTime?
+  deleted_at                    DateTime?
+  Section                       Section?  @relation(fields: [sectionId], references: [id])
+  sectionId                     String?
+
+  @@map("components")
+}
