@@ -8,7 +8,7 @@ app.register(cors)
 app.register(appRoutes)
 
 app.get('/', () => {
-  return 'Hello world!';
+  return 'Hello world novo coisa!';
 })
 
 app.listen({
